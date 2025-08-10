@@ -31,6 +31,7 @@ import org.wso2.identity.webhook.common.event.handler.api.builder.CredentialEven
 import org.wso2.identity.webhook.common.event.handler.api.builder.LoginEventPayloadBuilder;
 import org.wso2.identity.webhook.common.event.handler.api.builder.RegistrationEventPayloadBuilder;
 import org.wso2.identity.webhook.common.event.handler.api.builder.SessionEventPayloadBuilder;
+import org.wso2.identity.webhook.common.event.handler.api.builder.TokenEventPayloadBuilder;
 import org.wso2.identity.webhook.common.event.handler.api.builder.UserOperationEventPayloadBuilder;
 import org.wso2.identity.webhook.common.event.handler.api.constants.Constants;
 
@@ -70,6 +71,9 @@ public class EventHookHandlerServiceComponentTest {
 
     @Mock
     private EventPublisherService eventPublisherService;
+
+    @Mock
+    private TokenEventPayloadBuilder tokenEventPayloadBuilder;
 
     @BeforeMethod
     public void setUp() {
@@ -130,5 +134,13 @@ public class EventHookHandlerServiceComponentTest {
         when(registrationBuilder.getEventSchemaType()).thenReturn(Constants.EventSchema.WSO2);
         serviceComponent.addRegistrationEventPayloadBuilder(registrationBuilder);
         serviceComponent.removeRegistrationEventPayloadBuilder(registrationBuilder);
+    }
+
+    @Test
+    public void testAddAndRemoveTokenEventPayloadBuilder() {
+
+        when(tokenEventPayloadBuilder.getEventSchemaType()).thenReturn(Constants.EventSchema.WSO2);
+        serviceComponent.addTokenEventPayloadBuilder(tokenEventPayloadBuilder);
+        serviceComponent.removeTokenEventPayloadBuilder(tokenEventPayloadBuilder);
     }
 }

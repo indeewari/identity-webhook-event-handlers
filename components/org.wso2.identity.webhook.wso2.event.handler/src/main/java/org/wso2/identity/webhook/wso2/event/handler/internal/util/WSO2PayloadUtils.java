@@ -506,18 +506,13 @@ public class WSO2PayloadUtils {
         }
 
         String userName = (String) eventData.getProperties().get(IdentityEventConstants.EventProperty.USER_NAME);
-        String userId = (String) eventData.getProperties().get(IdentityEventConstants.EventProperty.USER_ID);
 
-        if (userName == null || userId == null) {
+        if (StringUtils.isBlank(userName) && StringUtils.isBlank(eventData.getUserId())) {
             return null;
         }
 
         User user = new User();
-        user.setId(userId);
-        Optional<UserClaim>
-                userNameOptional = generateUserClaim(USERNAME_CLAIM, userName,
-                eventData.getTenantDomain());
-        userNameOptional.ifPresent(user::addClaim);
+        user.setId(eventData.getUserId());
         user.setRef(constructFullURLWithEndpoint(SCIM2_USERS_ENDPOINT) + "/" + user.getId());
 
         String userStoreDomain = resolveUserStoreDomain(eventData);
@@ -530,6 +525,14 @@ public class WSO2PayloadUtils {
         try {
             String domainQualifiedUserName = userStoreDomain + "/" + userName;
 
+            if (StringUtils.isBlank(eventData.getUserId())) {
+                String userId =
+                        userStoreManager.getUserClaimValue(domainQualifiedUserName, FrameworkConstants.USER_ID_CLAIM,
+                                UserCoreConstants.DEFAULT_PROFILE);
+                user.setId(userId);
+            }
+            user.setRef(constructFullURLWithEndpoint(SCIM2_USERS_ENDPOINT) + "/" + user.getId());
+
             String emailAddress =
                     userStoreManager.getUserClaimValue(domainQualifiedUserName, FrameworkConstants.EMAIL_ADDRESS_CLAIM,
                             UserCoreConstants.DEFAULT_PROFILE);
@@ -541,6 +544,11 @@ public class WSO2PayloadUtils {
         } catch (UserStoreException e) {
             log.warn("Error while extracting user claims for the user : " + user.getId(), e);
         }
+
+        Optional<UserClaim>
+                userNameOptional = generateUserClaim(USERNAME_CLAIM, userName,
+                eventData.getTenantDomain());
+        userNameOptional.ifPresent(user::addClaim);
 
         return user;
     }

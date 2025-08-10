@@ -116,7 +116,7 @@ public class TokenEventHookHandler extends AbstractEventHandler {
                 .orElse(null);
 
         // Publish for current accessing org
-        String tenantDomain = eventData.getAuthenticationContext().getTenantDomain();
+        String tenantDomain = eventData.getTenantDomain();
         publishEvent(tenantDomain, tokenChannel, eventUri, eventProfile.getProfile(),
                 payloadBuilder, eventData, event.getEventName());
     }

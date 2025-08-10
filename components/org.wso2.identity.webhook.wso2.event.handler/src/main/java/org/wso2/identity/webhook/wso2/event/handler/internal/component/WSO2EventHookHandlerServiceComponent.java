@@ -28,6 +28,7 @@ import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.component.annotations.ReferenceCardinality;
 import org.osgi.service.component.annotations.ReferencePolicy;
 import org.wso2.carbon.identity.application.authentication.framework.UserSessionManagementService;
+import org.wso2.carbon.identity.application.mgt.ApplicationManagementService;
 import org.wso2.carbon.identity.claim.metadata.mgt.ClaimMetadataManagementService;
 import org.wso2.carbon.identity.organization.management.service.OrganizationManager;
 import org.wso2.carbon.user.core.service.RealmService;
@@ -177,5 +178,33 @@ public class WSO2EventHookHandlerServiceComponent {
 
         log.debug("Unsetting the User Session Management Service");
         WSO2EventHookHandlerDataHolder.getInstance().setUserSessionManagementService(null);
+    }
+
+    /**
+     * Set application management service implementation.
+     *
+     * @param applicationManagementService ApplicationManagementService instance
+     */
+    @Reference(
+            name = "application.management.service.component",
+            service = ApplicationManagementService.class,
+            cardinality = ReferenceCardinality.MANDATORY,
+            policy = ReferencePolicy.DYNAMIC,
+            unbind = "unsetApplicationManagementService")
+    protected void setApplicationManagementService(ApplicationManagementService applicationManagementService) {
+
+        log.debug("Setting the Application Management Service");
+        WSO2EventHookHandlerDataHolder.getInstance().setApplicationManagementService(applicationManagementService);
+    }
+
+    /**
+     * Unset application management service implementation.
+     *
+     * @param applicationManagementService ApplicationManagementService instance
+     */
+    protected void unsetApplicationManagementService(ApplicationManagementService applicationManagementService) {
+
+        log.debug("Unsetting the Application Management Service");
+        WSO2EventHookHandlerDataHolder.getInstance().setApplicationManagementService(null);
     }
 }

@@ -236,29 +236,6 @@ public class EventHookHandlerServiceComponent {
     }
 
     @Reference(
-            name = "token.event.payload.builder",
-            service = TokenEventPayloadBuilder.class,
-            cardinality = ReferenceCardinality.MULTIPLE,
-            policy = ReferencePolicy.DYNAMIC,
-            unbind = "removeTokenEventPayloadBuilder"
-    )
-    protected void addTokenEventPayloadBuilder(
-            TokenEventPayloadBuilder tokenEventPayloadBuilder) {
-
-        log.debug("Add Token Event Payload Builder service " +
-                tokenEventPayloadBuilder.getEventSchemaType());
-        EventHookHandlerDataHolder.getInstance().addTokenEventPayloadBuilder(tokenEventPayloadBuilder);
-    }
-
-    protected void removeTokenEventPayloadBuilder(
-            TokenEventPayloadBuilder tokenEventPayloadBuilder) {
-
-        log.debug("Remove Token Event Payload Builder service " +
-                tokenEventPayloadBuilder.getEventSchemaType());
-        EventHookHandlerDataHolder.getInstance().removeTokenEventPayloadBuilder(tokenEventPayloadBuilder);
-    }
-
-    @Reference(
             name = "application.management.service.component",
             service = ApplicationManagementService.class,
             cardinality = ReferenceCardinality.MANDATORY,
@@ -403,6 +380,24 @@ public class EventHookHandlerServiceComponent {
         EventHookHandlerDataHolder.getInstance().setOrganizationManager(null);
     }
 
+    @Reference(
+            name = "token.event.payload.builder",
+            service = TokenEventPayloadBuilder.class,
+            cardinality = ReferenceCardinality.MULTIPLE,
+            policy = ReferencePolicy.DYNAMIC,
+            unbind = "removeTokenEventPayloadBuilder"
+    )
+    protected void addTokenEventPayloadBuilder(TokenEventPayloadBuilder tokenEventPayloadBuilder) {
+
+        log.debug("Add Token Event Payload Builder service " + tokenEventPayloadBuilder.getEventSchemaType());
+        EventHookHandlerDataHolder.getInstance().addTokenEventPayloadBuilder(tokenEventPayloadBuilder);
+    }
+
+    protected void removeTokenEventPayloadBuilder(TokenEventPayloadBuilder tokenEventPayloadBuilder) {
+
+        log.debug("Remove Token Event Payload Builder service " + tokenEventPayloadBuilder.getEventSchemaType());
+        EventHookHandlerDataHolder.getInstance().removeTokenEventPayloadBuilder(tokenEventPayloadBuilder);
+    }
     /**
      * Get the identity property specified in identity-event.properties.
      *

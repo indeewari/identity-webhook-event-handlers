@@ -20,6 +20,8 @@ package org.wso2.identity.webhook.wso2.event.handler.internal.model;
 
 import org.wso2.identity.webhook.wso2.event.handler.internal.model.common.AccessToken;
 import org.wso2.identity.webhook.wso2.event.handler.internal.model.common.Application;
+import org.wso2.identity.webhook.wso2.event.handler.internal.model.common.Organization;
+import org.wso2.identity.webhook.wso2.event.handler.internal.model.common.Reason;
 import org.wso2.identity.webhook.wso2.event.handler.internal.model.common.Tenant;
 import org.wso2.identity.webhook.wso2.event.handler.internal.model.common.User;
 import org.wso2.identity.webhook.wso2.event.handler.internal.model.common.UserStore;
@@ -33,10 +35,28 @@ import java.util.List;
 public class WSO2TokenRevokedEventPayload extends WSO2BaseEventPayload {
 
     private List<AccessToken> accessTokens;
+    private Reason reason;
+    private String action;
+    private List<Application> application;
 
     public List<AccessToken> getAccessTokens() {
 
         return accessTokens;
+    }
+
+    public Reason getReason() {
+
+        return reason;
+    }
+
+    public String getAction() {
+
+        return action;
+    }
+
+    public List<Application> getApplications() {
+
+        return application;
     }
 
     private WSO2TokenRevokedEventPayload(Builder builder) {
@@ -46,7 +66,10 @@ public class WSO2TokenRevokedEventPayload extends WSO2BaseEventPayload {
         this.userStore = builder.userStore;
         this.user = builder.user;
         this.accessTokens = builder.accessTokens;
-        this.application = builder.application;
+        this.reason = builder.reason;
+        this.action = builder.action;
+        this.organization = builder.organization;
+        this.application = builder.applications;
     }
 
     /**
@@ -59,7 +82,10 @@ public class WSO2TokenRevokedEventPayload extends WSO2BaseEventPayload {
         private UserStore userStore;
         private User user;
         private List<AccessToken> accessTokens;
-        private Application application;
+        private Reason reason;
+        private String action;
+        private Organization organization;
+        private List<Application> applications;
 
         public Builder initiatorType(String initiatorType) {
 
@@ -91,9 +117,27 @@ public class WSO2TokenRevokedEventPayload extends WSO2BaseEventPayload {
             return this;
         }
 
-        public Builder application(Application application) {
+        public Builder applications(List<Application> applications) {
 
-            this.application = application;
+            this.applications = applications;
+            return this;
+        }
+
+        public Builder reason(Reason reason) {
+
+            this.reason = reason;
+            return this;
+        }
+
+        public Builder action(String action) {
+
+            this.action = action;
+            return this;
+        }
+
+        public Builder organization(Organization organization) {
+
+            this.organization = organization;
             return this;
         }
 

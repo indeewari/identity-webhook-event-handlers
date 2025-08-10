@@ -29,6 +29,7 @@ import java.util.Objects;
 import static org.wso2.identity.webhook.common.event.handler.api.constants.Constants.Channel.CREDENTIAL_CHANGE_CHANNEL;
 import static org.wso2.identity.webhook.common.event.handler.api.constants.Constants.Channel.LOGIN_CHANNEL;
 import static org.wso2.identity.webhook.common.event.handler.api.constants.Constants.Channel.SESSION_CHANNEL;
+import static org.wso2.identity.webhook.common.event.handler.api.constants.Constants.Channel.TOKEN_CHANNEL;
 import static org.wso2.identity.webhook.common.event.handler.api.constants.Constants.Channel.USER_OPERATION_CHANNEL;
 import static org.wso2.identity.webhook.common.event.handler.api.constants.Constants.Event.LOGIN_FAILURE_EVENT;
 import static org.wso2.identity.webhook.common.event.handler.api.constants.Constants.Event.LOGIN_SUCCESS_EVENT;
@@ -44,6 +45,8 @@ import static org.wso2.identity.webhook.common.event.handler.api.constants.Const
 import static org.wso2.identity.webhook.common.event.handler.api.constants.Constants.Event.SESSION_CREATED_EVENT;
 import static org.wso2.identity.webhook.common.event.handler.api.constants.Constants.Event.SESSION_PRESENTED_EVENT;
 import static org.wso2.identity.webhook.common.event.handler.api.constants.Constants.Event.SESSION_REVOKED_EVENT;
+import static org.wso2.identity.webhook.common.event.handler.api.constants.Constants.Event.TOKEN_ISSUED_EVENT;
+import static org.wso2.identity.webhook.common.event.handler.api.constants.Constants.Event.TOKEN_REVOKED_EVENT;
 import static org.wso2.identity.webhook.common.event.handler.api.constants.Constants.EventSchema.WSO2;
 
 /**
@@ -112,6 +115,12 @@ public class WSO2EventProfileManager implements EventProfileManager {
                  */
                 channel = USER_OPERATION_CHANNEL;
                 event = POST_USER_CREATED_EVENT;
+            } else if (IdentityEventConstants.Event.TOKEN_ISSUED.equals(eventName)) {
+                channel = TOKEN_CHANNEL;
+                event = TOKEN_ISSUED_EVENT;
+            } else if (IdentityEventConstants.Event.TOKEN_REVOKED.equals(eventName)) {
+                channel = TOKEN_CHANNEL;
+                event = TOKEN_REVOKED_EVENT;
             }
         }
         return EventMetadata.builder()

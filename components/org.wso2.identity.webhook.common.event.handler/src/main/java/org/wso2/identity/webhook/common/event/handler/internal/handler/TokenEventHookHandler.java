@@ -18,6 +18,7 @@
 
 package org.wso2.identity.webhook.common.event.handler.internal.handler;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.identity.base.IdentityRuntimeException;
@@ -115,6 +116,15 @@ public class TokenEventHookHandler extends AbstractEventHandler {
                 .map(org.wso2.carbon.identity.webhook.metadata.api.model.Event::getEventUri)
                 .orElse(null);
 
+        String applicationKey = resolveApplicationKey(eventData);
+        boolean isEventTriggeredForSystemApplication = StringUtils.isNotBlank(applicationKey)
+                && "CONSOLE".equals(applicationKey);
+        if (isEventTriggeredForSystemApplication) {
+            log.debug("Event trigger for system application: " + applicationKey +
+                    ". Skipping event handling for token event profile: " + eventProfile.getProfile());
+            return;
+        }
+
         // Publish for current accessing org
         String tenantDomain = eventData.getTenantDomain();
         publishEvent(tenantDomain, tokenChannel, eventUri, eventProfile.getProfile(),
@@ -151,5 +161,27 @@ public class TokenEventHookHandler extends AbstractEventHandler {
                 EventHookHandlerUtils.buildSecurityEventToken(eventPayload, eventUri);
         EventHookHandlerDataHolder.getInstance().getEventPublisherService()
                 .publish(securityEventTokenPayload, eventContext);
+    }
+
+    private String resolveApplicationKey(EventData eventData) {
+
+        if (eventData == null) {
+            return null;
+        }
+
+        if (String.valueOf(eventData.getProperties().get(IdentityEventConstants.EventProperty.CONSUMER_KEY)) != null) {
+            String consumerKey = (String) eventData.getProperties()
+                    .get(IdentityEventConstants.EventProperty.CONSUMER_KEY);
+            if (StringUtils.isNotBlank(consumerKey)) {
+                return consumerKey;
+            }
+        } else if (eventData.getProperties().get(IdentityEventConstants.EventProperty.CONSUMER_KEYS) instanceof List) {
+            List<String> consumerKeys = (List<String>) eventData.getProperties()
+                    .get(IdentityEventConstants.EventProperty.CONSUMER_KEYS);
+            if (consumerKeys != null && !consumerKeys.isEmpty()) {
+                return consumerKeys.get(0);
+            }
+        }
+        return null;
     }
 }
